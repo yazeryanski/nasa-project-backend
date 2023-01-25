@@ -1,14 +1,20 @@
 import { planets } from "models/planets/planets.model";
-import { RouterController } from "types/common";
-import IPlanet from "types/planets";
+import Responder from "routes/__helpers/Responder";
+import { RouterController } from "types/common.types";
+import IPlanet from "types/planets.types";
 
-const getPlanets:RouterController<IPlanet[]> = (req, res) => {
-  res.send({
-    status: true,
-    data: planets
-  })
+const getHttpPlanets:RouterController<IPlanet[]> = (req, res) => {
+  try {
+    if (!planets.length) throw new Error('Planets are empty');
+
+    return Responder.success(res, planets);
+  } catch (err: any) {
+    console.error(err);
+
+    return Responder.fail(res, [err.message]);
+  }
 }
 
 export default {
-  getPlanets,
+  getHttpPlanets,
 }

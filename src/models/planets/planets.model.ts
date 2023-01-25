@@ -3,7 +3,7 @@ import path from 'path';
 
 import { parse } from 'csv-parse';
 
-import IPlanet from 'types/planets';
+import IPlanet from 'types/planets.types';
 
 export const planets: IPlanet[] = [];
 
