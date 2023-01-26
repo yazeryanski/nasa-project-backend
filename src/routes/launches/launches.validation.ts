@@ -2,7 +2,8 @@ import dayjs from 'dayjs';
 import { ILaunchAddRequest } from 'types/launches.types';
 
 export const httpAddNewLaunch_v = (body: Partial<ILaunchAddRequest>) => {
-  if (!body.mission || !body.destination || !body.launchDate || !body.rocket)
+  console.log(body)
+  if (!body.mission || !body.target || !body.launchDate || !body.rocket)
     throw new Error('Invalid params');
 
   if (!dayjs(body.launchDate).isValid())

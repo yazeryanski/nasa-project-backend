@@ -5,23 +5,23 @@ export interface ILaunch {
   mission: string;
   rocket: string;
   launchDate: DateType;
-  destination: string;
-  customer: string[];
+  target: string;
+  customers: string[];
   upcoming: boolean;
   success: boolean;
 }
 
 export type ILaunchAddRequest = Pick<
   ILaunch,
-  'mission' | 'destination' | 'rocket' | 'launchDate'
+  'mission' | 'target' | 'rocket' | 'launchDate'
 >;
 
-interface LaunchConstructorOps extends ILaunchAddRequest {
+interface LaunchConstructorOps {
   flightNumber: number;
   mission: string;
   rocket: string;
   launchDate: DateType;
-  destination: string;
+  target: string;
 }
 
 // Classes
@@ -30,19 +30,19 @@ export class Launch implements ILaunch {
   public mission: string;
   public rocket: string;
   public launchDate: DateType;
-  public destination: string;
-  public customer: string[];
+  public target: string;
+  public customers: string[];
   public success: boolean;
   public upcoming: boolean;
 
   constructor(options: LaunchConstructorOps) {
     this.mission = options.mission;
     this.rocket = options.rocket;
-    this.destination = options.destination;
+    this.target = options.target;
     this.launchDate = options.launchDate;
     this.flightNumber = options.flightNumber;
-    (this.customer = ['Yazeryan', 'NASA', 'NATO']),
-      (this.success = true),
-      (this.upcoming = false);
+    (this.customers = ['Yazeryan', 'NASA', 'NATO']),
+      (this.success = false),
+      (this.upcoming = true);
   }
 }

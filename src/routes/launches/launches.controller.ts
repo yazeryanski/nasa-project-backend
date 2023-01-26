@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-
 import launches from 'models/launches/launches.model';
 import Responder from 'routes/__helpers/Responder';
 import { RouterController } from 'types/common.types';
@@ -36,7 +34,27 @@ const httpAddNewLaunch: RouterController<ILaunch, Partial<ILaunchAddRequest>> = 
   }
 }
 
+const httpAbortLaunch: RouterController<ILaunch> = (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if ( Number.isNaN(id) ) throw new Error('Invalid request')
+
+    const abortedLaunch = launches.find(item => item.flightNumber === id);
+    if ( !abortedLaunch ) throw new Error('The launch is not found');
+
+    abortedLaunch.success = false;
+    abortedLaunch.upcoming = false;
+
+    return Responder.success(res, abortedLaunch)
+  } catch (err: any) {
+    console.error(err);
+
+    return Responder.fail(res, [err.message]);
+  }
+}
+
 export default {
   httpGetLaunches,
-  httpAddNewLaunch
+  httpAddNewLaunch,
+  httpAbortLaunch
 };
