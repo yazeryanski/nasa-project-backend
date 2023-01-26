@@ -1,0 +1,110 @@
+{
+	"info": {
+		"_postman_id": "9899bdd1-062e-41c9-a648-745981ab6992",
+		"name": "Nasa-project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15082523"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/health",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get /planets",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/planets",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"planets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get /launches",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/launches",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"launches"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /launches",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mission\": \"New Mission\",\r\n    \"rocket\": \"Lada RCK 2000\",\r\n    \"destination\": \"Moon\",\r\n    \"launchDate\": \"2000/12/05\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/launches",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"launches"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete /launches/:id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/launches/101",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"launches",
+						"101"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
