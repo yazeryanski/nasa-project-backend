@@ -5,56 +5,39 @@ import { ILaunch, ILaunchAddRequest, Launch } from 'types/launches.types';
 import { httpAddNewLaunch_v } from './launches.validation';
 
 const httpGetLaunches: RouterController<ILaunch[]> = (req, res) => {
-  try {
-    if (!launches.length) throw new Error('Launches are empty');
-
-    return Responder.success(res, launches);
-  } catch (err: any) {
-    console.error(err);
-
-    return Responder.fail(res, [err.message]);
-  }
+  return Responder.success(res, launches);
 };
 
-const httpAddNewLaunch: RouterController<ILaunch, Partial<ILaunchAddRequest>> = (req, res) => {
-  try {
-    const body = httpAddNewLaunch_v(req.body);
-    
-    const newLaunch = new Launch({
-      ...body,
-      flightNumber: launches[launches.length - 1]?.flightNumber + 1 || 100
-    })
+const httpAddNewLaunch: RouterController<
+  ILaunch,
+  Partial<ILaunchAddRequest>
+> = (req, res) => {
+  const body = httpAddNewLaunch_v(req.body);
 
-    launches.push(newLaunch);
-    Responder.success(res, newLaunch, 201)
-  } catch (err: any) {
-    console.error(err);
+  const newLaunch = new Launch({
+    ...body,
+    flightNumber: launches[launches.length - 1]?.flightNumber + 1 || 100,
+  });
 
-    return Responder.fail(res, [err.message]);
-  }
-}
+  launches.push(newLaunch);
+  Responder.success(res, newLaunch, 201);
+};
 
 const httpAbortLaunch: RouterController<ILaunch> = (req, res) => {
-  try {
-    const id = Number(req.params.id);
-    if ( Number.isNaN(id) ) throw new Error('Invalid request')
+  const id = Number(req.params.id);
+  if (Number.isNaN(id)) return Responder.fail(res, ['Invalid request']);
 
-    const abortedLaunch = launches.find(item => item.flightNumber === id);
-    if ( !abortedLaunch ) throw new Error('The launch is not found');
+  const abortedLaunch = launches.find((item) => item.flightNumber === id);
+  if (!abortedLaunch) return Responder.fail(res, ['The launch is not found']);
 
-    abortedLaunch.success = false;
-    abortedLaunch.upcoming = false;
+  abortedLaunch.success = false;
+  abortedLaunch.upcoming = false;
 
-    return Responder.success(res, abortedLaunch)
-  } catch (err: any) {
-    console.error(err);
-
-    return Responder.fail(res, [err.message]);
-  }
-}
+  return Responder.success(res, abortedLaunch);
+};
 
 export default {
   httpGetLaunches,
   httpAddNewLaunch,
-  httpAbortLaunch
+  httpAbortLaunch,
 };
