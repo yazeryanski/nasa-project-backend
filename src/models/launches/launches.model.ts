@@ -11,7 +11,7 @@ const firstLaunch: ILaunch = {
   success: true
 }
 
-const launches: ILaunch[] = [firstLaunch];
+const launches: ILaunch[] = [];
 
 
 export default launches
