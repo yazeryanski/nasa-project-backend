@@ -11,16 +11,24 @@ const httpGetLaunches: RouterController<ILaunch[]> = (req, res) => {
 const httpAddNewLaunch: RouterController<
   ILaunch,
   Partial<ILaunchAddRequest>
-> = (req, res) => {
-  const body = httpAddNewLaunch_v(req.body);
+> = (req, res, next) => {
+  try {
+    const body = httpAddNewLaunch_v(req.body);
 
-  const newLaunch = new Launch({
-    ...body,
-    flightNumber: launches[launches.length - 1]?.flightNumber + 1 || 100,
-  });
+    const newLaunch = new Launch({
+      ...body,
+      flightNumber: launches[launches.length - 1]?.flightNumber + 1 || 100,
+    });
+  
+    launches.push(newLaunch);
+    Responder.success(res, newLaunch, 201);
 
-  launches.push(newLaunch);
-  Responder.success(res, newLaunch, 201);
+  } catch(err) {
+    if (typeof err === 'string') return Responder.fail(res, [err]);
+
+    // if it's another error pass it tho error handler
+    return next(err);
+  }
 };
 
 const httpAbortLaunch: RouterController<ILaunch> = (req, res) => {
