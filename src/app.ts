@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import morgan from 'morgan';
 
 // Middlewares
 import { errorHandler } from 'middlewares/errorHandler.middleware';
@@ -15,6 +16,7 @@ const app = express();
 //Middlewares 
 app.use(cors());
 app.use(express.json());
+app.use(morgan('common'));
 
 app.use(express.static('static'));
 
