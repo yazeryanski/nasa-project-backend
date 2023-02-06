@@ -3,8 +3,8 @@ import launchesController from './launches.controller';
 
 const router = express.Router();
 
-router.get('/', launchesController.httpGetLaunches);
-router.post('/', launchesController.httpAddNewLaunch);
-router.delete('/:id', launchesController.httpAbortLaunch);
+router.get('/', launchesController.get);
+router.post('/', launchesController.add);
+router.delete('/:id', launchesController.abort);
 
 export default router;

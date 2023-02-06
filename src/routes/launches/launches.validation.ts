@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { ILaunchAddRequest } from 'types/launches.types';
 
-export const httpAddNewLaunch_v = (body: Partial<ILaunchAddRequest>) => {
+const getValidBody = (body: Partial<ILaunchAddRequest>) => {
   if (!body.mission || !body.target || !body.launchDate || !body.rocket)
     throw 'Invalid Params';
 
@@ -10,3 +10,7 @@ export const httpAddNewLaunch_v = (body: Partial<ILaunchAddRequest>) => {
 
   return body as ILaunchAddRequest;
 };
+
+export default {
+  getValidBody
+}

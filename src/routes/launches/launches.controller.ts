@@ -1,29 +1,24 @@
-import launches from 'models/launches/launches.model';
+import launchesModel from 'models/launches/launches.model';
 import Responder from 'routes/__helpers/Responder';
 import { RouterController } from 'types/common.types';
-import { ILaunch, ILaunchAddRequest, Launch } from 'types/launches.types';
-import { httpAddNewLaunch_v } from './launches.validation';
+import { ILaunch, ILaunchAddRequest } from 'types/launches.types';
+import launchesValidation from './launches.validation';
 
-const httpGetLaunches: RouterController<ILaunch[]> = (req, res) => {
-  return Responder.success(res, launches);
+const get: RouterController<ILaunch[]> = async (req, res) => {
+  return Responder.success(res, await launchesModel.get());
 };
 
-const httpAddNewLaunch: RouterController<
-  ILaunch,
-  Partial<ILaunchAddRequest>
-> = (req, res, next) => {
+const add: RouterController<ILaunch, Partial<ILaunchAddRequest>> = async (
+  req,
+  res,
+  next
+) => {
   try {
-    const body = httpAddNewLaunch_v(req.body);
+    const body = launchesValidation.getValidBody(req.body);
 
-    const newLaunch = new Launch({
-      ...body,
-      flightNumber: launches[launches.length - 1]?.flightNumber + 1 || 100,
-    });
-  
-    launches.push(newLaunch);
+    const newLaunch = await launchesModel.add(body);
     Responder.success(res, newLaunch, 201);
-
-  } catch(err) {
+  } catch (err) {
     if (typeof err === 'string') return Responder.fail(res, [err]);
 
     // if it's another error pass it tho error handler
@@ -31,21 +26,21 @@ const httpAddNewLaunch: RouterController<
   }
 };
 
-const httpAbortLaunch: RouterController<ILaunch> = (req, res) => {
+const abort: RouterController<ILaunch> = async (req, res) => {
   const id = Number(req.params.id);
   if (Number.isNaN(id)) return Responder.fail(res, ['Invalid request']);
 
-  const abortedLaunch = launches.find((item) => item.flightNumber === id);
-  if (!abortedLaunch) return Responder.fail(res, ['The launch is not found']);
-
-  abortedLaunch.success = false;
-  abortedLaunch.upcoming = false;
-
-  return Responder.success(res, abortedLaunch);
+  try {
+    const result = await launchesModel.abort(id);
+    if (result.modifiedCount === 0) throw new Error('The launch is not found');
+    return Responder.success(res, null);
+  } catch (err: any) {
+    return Responder.fail(res, [err.message]);
+  }
 };
 
 export default {
-  httpGetLaunches,
-  httpAddNewLaunch,
-  httpAbortLaunch,
+  get,
+  add,
+  abort,
 };
