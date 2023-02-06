@@ -4,8 +4,7 @@ import path from 'path';
 import { parse } from 'csv-parse';
 
 import IPlanet from 'types/planets.types';
-
-export const planets: IPlanet[] = [];
+import planetsModel from './planets.mongo';
 
 export function loadPlanets(): Promise<void> {
   return new Promise((res, rej) => {
@@ -18,16 +17,17 @@ export function loadPlanets(): Promise<void> {
           columns: true,
         })
       )
-      .on('data', (data) => {
+      .on('data', async (data) => {
         if (isHabitablePlanet(data)) {
-          planets.push(data);
+          await savePlanet(data.kepler_name)
         }
       })
       .on('error', (err) => {
         rej(err);
       })
-      .on('end', () => {
-        console.log('Planets data successfully parsed')
+      .on('end', async () => {
+        const planetsCount = await (await planetsModel.find()).length
+        console.log(`Founded ${planetsCount} habbitable planets`)
         res();
       });
   });
@@ -40,4 +40,14 @@ function isHabitablePlanet(planet: IPlanet) {
     +planet['koi_insol'] < 1.11 &&
     +planet['koi_prad'] < 1.6
   );
+}
+
+function savePlanet(planet: string) {
+  return planetsModel.updateOne({
+    name: planet
+  }, {
+    name: planet,
+  }, {
+    upsert: true
+  });
 }
