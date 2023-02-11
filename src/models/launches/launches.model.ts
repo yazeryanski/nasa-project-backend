@@ -34,6 +34,7 @@ const add = async (launch: ILaunchAddRequest) => {
 
 const get = () => launchesModel.find({}, DMP).sort('flightNumber');
 
+
 const abort = (flightNumber: number) => {
   return launchesModel.updateOne(
     { flightNumber },

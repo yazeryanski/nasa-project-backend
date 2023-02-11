@@ -14,8 +14,8 @@ const add: RouterController<ILaunch, Partial<ILaunchAddRequest>> = async (
   next
 ) => {
   try {
-    const body = launchesValidation.getValidBody(req.body);
-
+    const body = await launchesValidation.getValidBody(req.body);
+    
     const newLaunch = await launchesModel.add(body);
     Responder.success(res, newLaunch, 201);
   } catch (err) {
