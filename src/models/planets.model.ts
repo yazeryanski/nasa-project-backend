@@ -1,8 +1,5 @@
 import mongoose from 'mongoose';
-
-export interface IPlanet {
-  name: string;
-}
+import { IPlanet } from 'types/planets.types';
 
 const scheme = new mongoose.Schema<IPlanet>({
   name: {

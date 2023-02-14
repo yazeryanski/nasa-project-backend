@@ -18,9 +18,9 @@ const add: RouterController<ILaunch, Partial<ILaunchAddRequest>> = async (
   try {
     const body = await launchesValidation.getValidBody(req.body);
     const launches = new Launches();
-
     const newLaunch = await launches.add(body);
-    Responder.success(res, newLaunch, 201);
+
+    return Responder.success(res, newLaunch, 201);
   } catch (err) {
     if (typeof err === 'string') return Responder.fail(res, [err]);
 
@@ -32,15 +32,12 @@ const add: RouterController<ILaunch, Partial<ILaunchAddRequest>> = async (
 const abort: RouterController<ILaunch> = async (req, res) => {
   const id = Number(req.params.id);
   if (Number.isNaN(id)) return Responder.fail(res, ['Invalid request']);
+  
   const launches = new Launches();
+  const result = await launches.abort(id);
 
-  try {
-    const result = await launches.abort(id);
-    if (result.modifiedCount === 0) throw new Error('The launch is not found');
-    return Responder.success(res, null);
-  } catch (err: any) {
-    return Responder.fail(res, [err.message]);
-  }
+  if (result.modifiedCount === 0) return Responder.fail(res, ['The launch is not found'], 404);
+  return Responder.success(res, true);
 };
 
 export default {

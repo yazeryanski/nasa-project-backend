@@ -1,10 +1,11 @@
-import launchesModel from 'models/launches/launches.model';
+import launchesModel from 'models/launches.model';
 import { DEFAULT_PROJECTION } from 'models/__helpers/helpers';
 import DataAccessService from 'services/DataAccess.servcie';
 import {
   ILaunch,
   ILaunchAddRequest,
   ILaunchConstructorOps,
+  Launch,
 } from 'types/launches.types';
 
 export default class Launches {
@@ -28,12 +29,15 @@ export default class Launches {
         ? launch.flightNumber
         : await this.getLastFlightNumber();
 
-    const newLaunch: ILaunchConstructorOps = {
+    const launchWithFlightNumber: ILaunchConstructorOps = {
       ...launch,
       flightNumber: flightNumber,
     };
 
-    return this.data.upsert({ flightNumber }, newLaunch);
+    const newLaunch = new Launch(launchWithFlightNumber)
+
+    const response = await this.data.create(newLaunch);
+    return response
   }
 
   getAll() {

@@ -4,7 +4,6 @@ import {
   Model,
   ProjectionType,
   QueryOptions,
-  QueryWithHelpers,
   SortOrder,
   UpdateQuery,
 } from 'mongoose';
@@ -34,13 +33,13 @@ class DataAccessService<T = any> {
    * @description Create a new document on the Model or Update that if it's exist
    */
   upsert(filter: FilterQuery<T>, body: UpdateQuery<T>) {
-    return this.model.updateOne(filter, body, { upsert: true });
+    return this.model.updateOne(filter, body, { upsert: true, lean: true });
   }
 
   /**
    * @description Count the number of documents matching the query criteria
    */
-  count(query: QueryWithHelpers<T[], T>) {
+  count(query: FilterQuery<T>) {
     return this.model.count(query);
   }
 
@@ -56,7 +55,7 @@ class DataAccessService<T = any> {
    *   query
    */
   findOne(
-    query?: QueryWithHelpers<T[], T>,
+    query?: FilterQuery<T>,
     projection: ProjectionType<T> = { __v: 0 },
     options: QueryOptions = { lean: true }
   ) {

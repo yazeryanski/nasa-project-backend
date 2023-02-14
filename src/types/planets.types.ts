@@ -1,5 +1,7 @@
-
-export default interface IPlanet {
+export interface IPlanet {
+  name: string;
+}
+export interface IPlanetCSV {
   kepid: string;
   kepoi_name: string;
   kepler_name: string;
