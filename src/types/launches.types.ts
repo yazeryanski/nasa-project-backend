@@ -16,12 +16,15 @@ export type ILaunchAddRequest = Pick<
   'mission' | 'target' | 'rocket' | 'launchDate'
 >;
 
-interface LaunchConstructorOps {
+export interface ILaunchConstructorOps {
   flightNumber: number;
   mission: string;
   rocket: string;
   launchDate: DateType;
   target: string;
+  customers?: string[];
+  success?: boolean;
+  upcoming?: boolean;
 }
 
 // Classes
@@ -35,14 +38,16 @@ export class Launch implements ILaunch {
   public success: boolean;
   public upcoming: boolean;
 
-  constructor(options: LaunchConstructorOps) {
+  private DEFAULT_COSTUMERS = ['Yazeryan', 'NASA', 'NATO'];
+
+  constructor(options: ILaunchConstructorOps) {
     this.mission = options.mission;
     this.rocket = options.rocket;
     this.target = options.target;
     this.launchDate = options.launchDate;
     this.flightNumber = options.flightNumber;
-    (this.customers = ['Yazeryan', 'NASA', 'NATO']),
-      (this.success = false),
-      (this.upcoming = true);
+    this.customers =  options.customers ?? this.DEFAULT_COSTUMERS;
+    this.success = options.success ?? false;
+    this.upcoming = options.upcoming ?? true;
   }
 }

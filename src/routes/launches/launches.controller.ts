@@ -1,11 +1,13 @@
-import launchesModel from 'models/launches/launches.model';
 import Responder from 'routes/__helpers/Responder';
+import Launches from 'services/Launches.service';
 import { RouterController } from 'types/common.types';
 import { ILaunch, ILaunchAddRequest } from 'types/launches.types';
 import launchesValidation from './launches.validation';
 
 const get: RouterController<ILaunch[]> = async (req, res) => {
-  return Responder.success(res, await launchesModel.get());
+  const launches = new Launches();
+
+  return Responder.success(res, await launches.getAll());
 };
 
 const add: RouterController<ILaunch, Partial<ILaunchAddRequest>> = async (
@@ -15,8 +17,9 @@ const add: RouterController<ILaunch, Partial<ILaunchAddRequest>> = async (
 ) => {
   try {
     const body = await launchesValidation.getValidBody(req.body);
-    
-    const newLaunch = await launchesModel.add(body);
+    const launches = new Launches();
+
+    const newLaunch = await launches.add(body);
     Responder.success(res, newLaunch, 201);
   } catch (err) {
     if (typeof err === 'string') return Responder.fail(res, [err]);
@@ -29,9 +32,10 @@ const add: RouterController<ILaunch, Partial<ILaunchAddRequest>> = async (
 const abort: RouterController<ILaunch> = async (req, res) => {
   const id = Number(req.params.id);
   if (Number.isNaN(id)) return Responder.fail(res, ['Invalid request']);
+  const launches = new Launches();
 
   try {
-    const result = await launchesModel.abort(id);
+    const result = await launches.abort(id);
     if (result.modifiedCount === 0) throw new Error('The launch is not found');
     return Responder.success(res, null);
   } catch (err: any) {

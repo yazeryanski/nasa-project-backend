@@ -1,52 +1,16 @@
-import { DMP } from 'models/__helpers/helpers';
-import { ILaunchAddRequest, Launch } from 'types/launches.types';
-import launchesModel from './launches.mongo';
+import { required } from "models/__helpers/mongoShorthands";
+import mongoose from "mongoose";
+import { ILaunch } from "types/launches.types";
 
-const getLastFlightNumber = async () => {
-  const DEFAULT_FLIGHT_NUMBER = 100;
-  const lastLaunch = await launchesModel.findOne().sort('-flightNumber');
+const scheme = new mongoose.Schema<ILaunch>({
+  flightNumber: required(Number),
+  mission: required(String),
+  customers: required([String]),
+  launchDate: required(String),
+  rocket: required(String),
+  success: required(Boolean),
+  target: required(String),
+  upcoming: required(Boolean)
+});
 
-  return lastLaunch?.flightNumber || DEFAULT_FLIGHT_NUMBER;
-};
-
-const add = async (launch: ILaunchAddRequest) => {
-  const lastFlightNumber = await getLastFlightNumber();
-
-  const launchData = {
-    ...launch,
-    flightNumber: lastFlightNumber + 1,
-  };
-
-  const newLaunch = new Launch(launchData);
-
-  await launchesModel.updateOne(
-    {
-      flightNumber: newLaunch.flightNumber,
-    },
-    newLaunch,
-    {
-      upsert: true,
-    }
-  );
-
-  return newLaunch;
-};
-
-const get = () => launchesModel.find({}, DMP).sort('flightNumber');
-
-
-const abort = (flightNumber: number) => {
-  return launchesModel.updateOne(
-    { flightNumber },
-    {
-      upcoming: false,
-      success: false,
-    }
-  );
-};
-
-export default {
-  get,
-  add,
-  abort,
-};
+export default mongoose.model<ILaunch>('Launches', scheme);
