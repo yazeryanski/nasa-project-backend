@@ -5,7 +5,7 @@ export interface ILaunch {
   mission: string;
   rocket: string;
   launchDate: DateType;
-  target: string;
+  target: string | null;
   customers: string[];
   upcoming: boolean;
   success: boolean;
@@ -21,7 +21,7 @@ export interface ILaunchConstructorOps {
   mission: string;
   rocket: string;
   launchDate: DateType;
-  target: string;
+  target: string | null;
   customers?: string[];
   success?: boolean;
   upcoming?: boolean;
@@ -33,7 +33,7 @@ export class Launch implements ILaunch {
   public mission: string;
   public rocket: string;
   public launchDate: DateType;
-  public target: string;
+  public target: string | null;
   public customers: string[];
   public success: boolean;
   public upcoming: boolean;
@@ -43,7 +43,7 @@ export class Launch implements ILaunch {
   constructor(options: ILaunchConstructorOps) {
     this.mission = options.mission;
     this.rocket = options.rocket;
-    this.target = options.target;
+    this.target = options.target || null;
     this.launchDate = options.launchDate;
     this.flightNumber = options.flightNumber;
     this.customers =  options.customers ?? this.DEFAULT_COSTUMERS;

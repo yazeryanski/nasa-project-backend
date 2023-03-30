@@ -3,7 +3,7 @@ import path from 'path';
 import { parse } from 'csv-parse';
 
 import { IPlanet, IPlanetCSV } from "types/planets.types";
-import DataAccessService from "./DataAccess.servcie";
+import DataAccessService from "./common/DataAccess.servcie";
 import planetsModel from "models/planets.model";
 import { __rootdir } from 'settings';
 

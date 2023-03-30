@@ -1,6 +1,6 @@
 import launchesModel from 'models/launches.model';
 import { DEFAULT_PROJECTION } from 'models/__helpers/helpers';
-import DataAccessService from 'services/DataAccess.servcie';
+import DataAccessService from 'services/common/DataAccess.servcie';
 import {
   ILaunch,
   ILaunchAddRequest,
@@ -34,14 +34,19 @@ export default class Launches {
       flightNumber: flightNumber,
     };
 
-    const newLaunch = new Launch(launchWithFlightNumber)
+    const newLaunch = new Launch(launchWithFlightNumber);
 
-    const response = await this.data.create(newLaunch);
-    return response
+    const response = await this.data.upsert({ flightNumber }, newLaunch);
+    return response;
   }
 
   getAll() {
-    return this.data.find({}, DEFAULT_PROJECTION, { lean: true }, 'flightNumber');
+    return this.data.find(
+      {},
+      DEFAULT_PROJECTION,
+      { lean: true },
+      'flightNumber'
+    );
   }
 
   abort(flightNumber: number) {

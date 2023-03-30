@@ -9,7 +9,7 @@ const scheme = new mongoose.Schema<ILaunch>({
   launchDate: required(String),
   rocket: required(String),
   success: required(Boolean),
-  target: required(String),
+  target: String,
   upcoming: required(Boolean)
 });
 
