@@ -40,11 +40,11 @@ export default class Launches {
     return response;
   }
 
-  getAll() {
+  getAll(limit = 50, skip = 0) {
     return this.data.find(
       {},
       DEFAULT_PROJECTION,
-      { lean: true },
+      { lean: true, limit, skip },
       'flightNumber'
     );
   }
