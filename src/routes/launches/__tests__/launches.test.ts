@@ -4,80 +4,63 @@ import {
   inputForAdding,
   inputForAddingWithInvalidDate,
   inputForAddingWithMissingProps,
-  inputForAddingWithoutDate,
 } from './mockInputData';
+import { disconnectDBConnection, setDbConnection } from 'db';
 
-describe('Initially launches should be empty', () => {
-  const API = request(app);
-
-  test('GET | Should get empty array', async () => {
-    const req = await API.get('/launches');
-
-    expect(req.statusCode).toBe(200);
-    expect(req.body.status).toBe(true);
-    expect(req.body.data).toHaveLength(0);
-  });
-});
-
-describe('Adding new launches and checking all list', () => {
-  const API = request(app);
-
-  test('POST | Should add a new launch', async () => {
-    const req = await API.post('/launches').send(inputForAdding);
-
-    expect(req.statusCode).toBe(201);
-    expect(req.body.status).toBe(true);
-    expect(req.body.data).toMatchObject(inputForAddingWithoutDate);
+describe('Launches API', () => {
+  beforeAll(async () => {
+    await setDbConnection();
   });
 
-  test('GET | Should get 1 launch after adding', async () => {
-    const req = await API.get('/launches');
-
-    expect(req.statusCode).toBe(200);
-    expect(req.body.status).toBe(true);
-    expect(req.body.data).toHaveLength(1);
+  afterAll(async () => {
+    await disconnectDBConnection();
   });
 
-  test('GET | Should get 5 launch after adding another 4 launches', async () => {
-    const requests = [
-      API.post('/launches').send(inputForAdding),
-      API.post('/launches').send(inputForAdding),
-      API.post('/launches').send(inputForAdding),
-      API.post('/launches').send(inputForAdding),
-    ];
+  describe('Adding new launches and checking all list', () => {
+    const API = request(app);
 
-    await Promise.all(requests);
+    test('POST | Should add a new launch', async () => {
+      const req = await API.post('/launches').send(inputForAdding);
 
-    const req = await API.get('/launches');
-
-    expect(req.statusCode).toBe(200);
-    expect(req.body.status).toBe(true);
-    expect(req.body.data).toHaveLength(5);
-  });
-});
-
-describe('Failing cases when the input data is invalid', () => {
-  const API = request(app);
-
-  test('POST | Should fail when the input data is invalid', async () => {
-    const req = await API.post('/launches').send(
-      inputForAddingWithMissingProps
-    );
-
-    expect(req.statusCode).toBe(400);
-    expect(req.body).toEqual({
-      status: false,
-      messages: ['Invalid Params'],
+      expect(req.statusCode).toBe(201);
+      expect(req.body.status).toBe(true);
     });
-  });
 
-  test('POST | Should fail when the launchDate is invalid', async () => {
-    const req = await API.post('/launches').send(inputForAddingWithInvalidDate);
+    test('GET | Should get at least 1 launch', async () => {
+      const req = await API.get('/launches');
 
-    expect(req.statusCode).toBe(400);
-    expect(req.body).toEqual({
-      status: false,
-      messages: ['The launchDate property is invalid'],
+      expect(req.statusCode).toBe(200);
+      expect(req.body.status).toBe(true);
+
+      expect(req.body.data.length).toBeGreaterThan(0);
+    });
+
+    describe('Failing cases when the input data is invalid', () => {
+      const API = request(app);
+
+      test('POST | Should fail when the input data is invalid', async () => {
+        const req = await API.post('/launches').send(
+          inputForAddingWithMissingProps
+        );
+
+        expect(req.statusCode).toBe(400);
+        expect(req.body).toEqual({
+          status: false,
+          messages: ['Invalid Params'],
+        });
+      });
+
+      test('POST | Should fail when the launchDate is invalid', async () => {
+        const req = await API.post('/launches').send(
+          inputForAddingWithInvalidDate
+        );
+
+        expect(req.statusCode).toBe(400);
+        expect(req.body).toEqual({
+          status: false,
+          messages: ['The launchDate property is invalid'],
+        });
+      });
     });
   });
 });

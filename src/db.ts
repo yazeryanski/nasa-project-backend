@@ -9,6 +9,9 @@ if (!MONGO_URL) throw new Error('ENV Variable error, missing MONGO_URL');
 export const setDbConnection = () => {
   mongoose.set('strictQuery', false);
 
-  mongoose.connect(process.env.MONGO_URL!);
+  return mongoose.connect(process.env.MONGO_URL!);
 }
 
+export const disconnectDBConnection = () => {
+  return mongoose.disconnect();
+}

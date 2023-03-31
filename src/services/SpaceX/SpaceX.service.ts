@@ -7,7 +7,7 @@ import { SpacexLaunch } from './SpaceX.types';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const SPACEX_SYNCH_INTERVAL_DAYS = process.env.SPACEX_SYNCH_INTERVAL_DAYS || 30
+const SPACEX_SYNCH_INTERVAL_DAYS = Number(process.env.SPACEX_SYNCH_INTERVAL_DAYS) || 30
 
 interface SpacexResponse {
   docs: SpacexLaunch[];
