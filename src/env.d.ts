@@ -1,6 +1,7 @@
 namespace NodeJS {
   interface ProcessEnv {
     PORT?: string;
-    SPACEX_SYNCH_INTERVAL_DAYS?: number
+    SPACEX_SYNCH_INTERVAL_DAYS?: number;
+    MONGO_URL: string;
   }
 }

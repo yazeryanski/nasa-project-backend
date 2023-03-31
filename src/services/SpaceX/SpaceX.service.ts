@@ -1,12 +1,13 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import dayjs from 'dayjs';
-import launchesModel from 'models/launches.model';
-import DataAccessService from 'services/common/DataAccess.servcie';
 import { IHttpRequest } from 'services/HttpRequest.service';
 import Settings from 'services/common/Settings.service';
 import { ILaunch } from 'types/launches.types';
 import Launches from '../Launches.service';
 import { SpacexLaunch } from './SpaceX.types';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const SPACEX_SYNCH_INTERVAL_DAYS = process.env.SPACEX_SYNCH_INTERVAL_DAYS || 30
 
 interface SpacexResponse {
   docs: SpacexLaunch[];
@@ -41,8 +42,8 @@ export default class SpacexService {
       
       if (!lastSyncDate.isValid())
         throw new Error('SpaceX sync: Invalid last sync date');
-      if (dayjs().diff(lastSyncDate, 'month') >= 1)
-        throw new Error('Spacex Sync, last was more than 1 month ago');
+      if (dayjs().diff(lastSyncDate, 'day') >= SPACEX_SYNCH_INTERVAL_DAYS)
+        throw new Error(`Spacex Sync, last was more than ${SPACEX_SYNCH_INTERVAL_DAYS} days ago`);
     } catch (err) {
       console.log('ERROR: ', err);
 
