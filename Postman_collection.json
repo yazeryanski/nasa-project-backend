@@ -48,13 +48,23 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/launches",
+					"raw": "localhost:8080/launches?limit=20&page=1",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"launches"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "20"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
 					]
 				}
 			},
@@ -67,7 +77,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"mission\": \"New Mission\",\r\n    \"rocket\": \"Lada RCK 2000\",\r\n    \"destination\": \"Moon\",\r\n    \"launchDate\": \"2000/12/05\"\r\n}",
+					"raw": "{\r\n    \"mission\": \"New Mission2\",\r\n    \"rocket\": \"Lada RCK 2000\",\r\n    \"target\": \"Kepler-296 A f\",\r\n    \"launchDate\": \"2000/12/05\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -93,14 +103,45 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/launches/101",
+					"raw": "localhost:8080/launches/107",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"launches",
-						"101"
+						"107"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SpacexAPI",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"query\": {},\r\n        \"options\": {\r\n            \"pagination\": false,\r\n            \"populate\": [\"rocket\", \"payloads\"]\r\n        }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.spacexdata.com/v5/launches/query",
+					"protocol": "https",
+					"host": [
+						"api",
+						"spacexdata",
+						"com"
+					],
+					"path": [
+						"v5",
+						"launches",
+						"query"
 					]
 				}
 			},
