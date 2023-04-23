@@ -1,0 +1,36 @@
+name: Nasa-Project-CI
+on: [push, pull_request]
+branches: [master]
+env: 
+  CI: true
+  MONGO_URL: mongodb://root:root@lochalhost:27017
+jobs: 
+  build: 
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
+        mongodb-version: ['4.x']
+    runs-on: [ubuntu-latest, windows-latest, macos-latest]
+    
+    steps: 
+      - uses: actions/checkout@v3
+      
+      # NODE JS
+      - name: Use Node js ${{ matrix.node-version }} 
+        uses: actions/setup-node@v3
+        with: 
+          node-version: ${{ matrix.node-version }}
+      
+      # MONGO DB
+      - name: Running the MongoDB server | ${{ matrix.mongodb-version }}
+        uses: supercharge/mongodb-github-action@1.8.0
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
+          mongodb-username: root
+          mongodb-password: root
+          mongodb-db: nasa-db
+
+      # Building
+      - run: npm ci
+      - run: npm test      
+
